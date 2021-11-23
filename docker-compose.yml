@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  seq:
+    image: datalust/seq
+    container_name: seq_composed
+    volumes:
+      - ./seqdata:/data
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "90:80" # docker internal networking uses the internal port (80)
+    restart: unless-stopped
+
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - web-root:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - seq
+
+  # certbot:  
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #     - web-root:/var/www/html
+  #   depends_on:
+  #     - webserver
+  #   command: certonly --webroot --webroot-path=/var/www/html --email lmclennan@datalust.co --agree-tos --no-eff-email --staging -d seq.withouttheloop.com
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
