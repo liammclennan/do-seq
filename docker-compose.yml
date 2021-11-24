@@ -34,7 +34,7 @@ services:
       - web-root:/var/www/html
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email lmclennan@datalust.co --agree-tos --no-eff-email --force-renewal -d seq.withouttheloop.com
+    command: certonly --webroot --webroot-path=/var/www/html --email <your-email-here> --agree-tos --no-eff-email --force-renewal -d <your-domain-here>
 
 volumes:
   certbot-etc:
